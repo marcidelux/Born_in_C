@@ -1,0 +1,165 @@
+Ericsson Programozó Bajnokság 2018
+I. forduló
+Bevezetõ
+Szeretitek a labirintusokat? Most a saját kis Pacmanetek szaladgálhat benne! A cél az, hogy
+megszerezzétek vele az összes pontot a labirintusban. A labirintust azonban szellemek
+õrzik, melyekkel nem érdemes találkozni a Pacmaneteknek, hisz a szellemek megeszik a
+Pacmant ha az nem menekül el. A pályán gyorsítók is el vannak rejtve, ezektõl a Pacman
+kis ideig gyorsabban mozog, és le tudja gyõzni az õt kergetõ szellemeket. Érdemes ilyenkor
+szellemekre vadászni, az értük kapott pluszpontokért. A feladaton belül négy
+mellékküldetést is kaptok, melyekre célszerû figyelni a labirintus bejárása során.
+Ha sikerül az összes pontot felszedni, akkor megmérettethetitek magatokat a következõ
+Pacman kihíváson!
+Ti el tudtok menekülni a szellemek elõl, és bejárni a labirintus összes zeg-zugát?
+Játéklogika
+A játék körökre osztott. Alap esetben minden körben a pályán lévõ összes szereplõnek
+(Pacman, szellemek) lehetõsége van egyszerre mozogni, lépni egyet a pályán. A Pacman
+mozgásirányát a játékostól vett parancs határozza meg, a szellemek a saját logikájuk szerint
+mozognak.
+A játéktér egy két dimenziós labirintus, amely x*y darab játékmezõbõl áll. Egy játékmezõ fal
+és út lehet, a Pacman és a szellemek az utakon tartózkodhatnak, azokon mozoghatnak.
+Kivételt képez a szellemfal, ami a szellemek újraélesztési helyét jelöli. A szellemfalon
+Pacman nem mehet át, ide kerülnek a szellemek, ha a Pacman megeszi õket (Ha több is
+van akkor a hozzájuk legközelebb lévõhöz). Ha valaki kimegy a pályáról, a pálya másik
+végén, ugyanabban a sorban/oszlopban tér vissza. Az utakon vannak elszórva a pontokat
+jelentõ ételek, ha a pacman olyan útra érkezik, ahol van kaja, megeszi azt és kap érte 10
+pontot. Az ételek mellett gyorsítók is vannak a pályán. Gyorsító 50 pontot ér, felszedése
+után a Pacman 21 körig kettõ mezõt is mozoghat egy körben. Az ételek nem termelõdnek
+újra, ha a Pacman megevett egyet, az alatta lévõ út üres lesz utána.
+Ha a Pacman felszedi a gyorsítót 21 körig meg tudja enni a szellemeket. Egy gyorsító ideje
+alatt minden szellemet csak egyszer tud megenni, erre szolgál a szellem ehetõ
+tulajdonsága. A gyorsító megszerzése után mindegyik szellem 21 körig ehetõ lesz, ha
+azonban a Pacman megevett egy szellemet és az visszatér a játékba, ugyanazzal a
+gyorsítóval már nem eheti meg mégegyszer, mert az elvesztette ehetõ tulajdonságát.
+Természetesen, ha idõközben a Pacman felszed egy újabb gyorsítót a szellem ismét ehetõ
+lesz, és a többi szellem is úgyanúgy még +21 körig lesz ehetõ a gyorsító megszerzésétõl
+számítva. A szellem a halála utáni körben visszakerül a legközelebbi szellemfalra, fagyott
+állapotban. A szellem 5 körig marad fagyott, és amíg az állapot érvényes, nem tud mozogni.
+Egy szellem megevéséért 100 pont jár, ha azonban a Pacman ugyanazon gyorsító hatása
+alatt egy újabb szellemet megeszik a pont duplázódik.
+Ha a Pacman valamelyik szellemmel találkozik, az egyik megeszi a másikat attól függõen,
+hogy a Pacman gyors és a szellem ehetõ-e. Találkozás úgy jöhet létre, ha a lépéseik után
+ugyanazon a mezõn állnak, vagy keresztezték egymás útját. Ha szellem szellemmel
+találkozik nem történik semmi.
+Ha a Pacmant irányító parancs a játékostól nem érkezik meg a Pacman az elõzõ irányba
+mozog tovább, ha még nem volt elõzõ irány, akkor alapértelmezetten balra. A Pacman
+gyorsított módban kettõt lép, a játékostól ekkor két parancsot vár. Ha csak az egyik érkezik
+meg, a megkapott irányba lép kettõt, ha egyik sem az elõbbi esethez hasonlóan viselkedik,
+dupla lépéssel. Ha a Pacman nem tud a megadott irányba lépni (egy fal az útját állja)
+sikertelennek könyveli az adott lépést és marad a helyén.
+A játék 480 kör után automatikusan véget ér. A játék végét jelenti az is, ha a Pacman
+meghal, vagy az összes ételt felszedte (a gyorsítókat nem számolva). A játékos akkor jut
+tovább a következõ fordulóba, ha felszedte az összes ételt.
+A játékon belüli mellékküldetések, melyek a következõ fordulóban elõnyöket jelenthetnek:
+? A Pacman minden szellemet megeszik legalább egyszer
+? A Pacman 10 körön belül megeszik 3 szellemet
+? A Pacman az elsõ 160 körben megeszi az ételek felét
+? A Pacman az elsõ 160 körben nem használ gyorsítót
+Lefixált kezdõállapot:
+ "<GAMEID> 0 -1\n" +
+ "25 26 1 4\n" +
+ "FFFFFFFFFFFFFFFFFFFFFFFFFF\n" + //0
+ "F11111111111FF11111111111F\n" + //1
+ "F1FFFF1FFFF1FF1FFFF1FFFF1F\n" + //2
+ "F+FFFF1FFFF1FF1FFFF1FFFF+F\n" + //3
+ "F1FFFF1FFFF1FF1FFFF1FFFF1F\n" + //4
+ "F111111111111111111111111F\n" + //5
+ "F1FFFF1F1FFFFFFFF1F1FFFF1F\n" + //6
+ "F1FFFF1F1FFFFFFFF1F1FFFF1F\n" + //7
+ "F111111F1111FF1111F111111F\n" + //8
+ "FFFFFF1FFFF FF FFFF1FFFFFF\n" + //9
+ "FFFFFF1FF FF1FFFFFF\n" + //10
+ "FFFFFF1FF FFGGFF FF1FFFFFF\n" + //11
+ " 1 F F 1 \n" + //12
+ "FFFFFF1FF FFFFFF FF1FFFFFF\n" + //13
+ "F11111111111FF11111111111F\n" + //14
+ "F1FFFF1FFFF1FF1FFFF1FFFF1F\n" + //15
+ "F1FFFF1FFFF1FF1FFFF1FFFF1F\n" + //16
+ "F+11FF111111 111111FF11+F\n" + //17
+ "FFF1FF1F1FFFFFFFF1F1FF1FFF\n" + //18
+ "FFF1FF1F1FFFFFFFF1F1FF1FFF\n" + //19
+ "F111111F1111FF1111F111111F\n" + //20
+ "F1FFFFFFFFF1FF1FFFFFFFFF1F\n" + //21
+ "F1FFFFFFFFF1FF1FFFFFFFFF1F\n" + //22
+ "11111111111111111111111111\n" + //23
+ "FFFFFFFFFFFFFFFFFFFFFFFFFF\n" + //24
+ "0 <CSAPATNEV> 17 13 0 0 XXXX\n" +
+ "a 12 11 0 4\n" +
+ "b 12 12 0 8\n" +
+ "c 12 13 0 12\n" +
+ "d 12 14 0 16\n"
+Protokoll
+A program, amit írtok minden körben megkapja a játék aktuális állapotát a standard inputon,
+majd az aktuálisan kapott üzenetre kell reagálni, hogy az általatok irányított PAC-MAN
+milyen irányba mozduljon el. A standard outputra kell kiírni a válaszotokat.
+A bemenet formátuma plain text, ASCII karakterekkel.
+Minden kör elején megérkezõ adat elsõ két sora 7 db számból fog állni:
+G T P
+Y X Np Ng[ M]
+ahol ‘G’ a játék azonosítója, ‘T’ a játékon belüli kör (tick) száma, ‘P’ a válaszban elvárt
+azonosítójú pacman mozgásiránya
+Az 'Y' mondja meg hány sorból, az 'X' hogy hány oszlopból áll a játékmezõ. 'Np' darab
+pacman, 'Ng' darab szellem (ghost) információ várható.
+Opcionálisan megjelenhet a sor végéig egy szöveges üzenet ‘M’.
+- ha rossz formátumú üzenetet küldtök (UNRECOGNIZABLE <MESSAGE>),
+- ha nem megfelelõ gameID-t küldtök (MISMATCH <GAMEID>)
+- ha késõn válaszoltok egy üzenetre (MISSED <TICK>), 2 másodperc van maximálisan,
+- ha korábban válaszoltok, maxtick utáni tick-el (OVER <TICK>),
+- ha korábban válaszoltok (CACHED <TICK>) - ilyenkor elmentõdik késõbbre a válasz,
+- ha kétszer válaszoltok egy üzenetre (DUPLICATE <TICK>),
+- ha a játéknak vége (END <REASON>), ahol a REASON:
+a) DONE, ha az összes pontot sikerült megszereznetek
+b) RANOUT, ha a ‘T’. tick letellt,
+c) DEAD p, ha a pacmanedet megette egy szellem (a ‘p’ lejjebb látható pacman
+információt jelenti),
+d) INACTIVE, ha a pacman 4 másodpercen belül nem küldött (akár üres) üzenetet sem,
+és nincs valid cachelt üzenete.
+e) PREMATURE, ha a programotokkal megszakadt a kommunikáció az elõzõ feltételek
+bármelyikének teljesülése nélkül
+akkor ezen üzenetek ‘ karakterrel elválasztva megjelennek.
+A következõ 'Y' bemeneti sorban 'X' darab karakter következik:
+'F' karakter a falat jelöli, amire se pacman, sem a szellemek nem tud lépni.
+' ' (space) üres mezõt jelöl - ide lehet lépni.
+'1' egy megehetõ pontot jelöl, ezeket kell összegyûjteni. Megevés után üres mezõ lesz itt.
+'+' egy megehetõ gyorsító/erõsítõt jelöl, mely megevése után a szellemek egy ideig ehetõek
+lesznek. Ez is üres mezõ lesz.
+'G' karakter a pacman által nem átjárható falat jelöli, de a szellemek számára szabad járást.
+Általában ezeken jelenik meg a szellem, ha el lett fogyasztva.
+A következõ 'Np' sor a pacmanek leírása lesz, soronként:
+i n y x f s g[ c]
+ahol az 'i' a pacman indexe, az 'n' az irányító csapat neve ami egy egybefüggõ string (space
+nélkül), 'y' 'x' a pacman (sor és oszlop) pozíciója, 'f' az idõegységek száma amíg még gyors,
+'s' az aktuális pontszáma, 'g' a pluszpontok helye, és opcionálisan megjelenhet 'c' mezõ, ami
+az elõzõ körben történt mozgásokat, és azok hatásait jelöli. Ha a Pacmant megette egy
+szellem, akkor ez az információ nem jön, csak az “END DEAD p” üzenetben
+A pluszpontok az elõdöntõ során 4 karakterbõl fognak állni:
+- az elsõ karakter (X/a/A): ALL_GHOST_EATED_LEAST_ONCE, minden szellem legalább
+egyszer el lett fogyasztva
+- a második karakter (X/t/T): THREE_GHOST_EATED_WITHIN_10_TICK, 10 körön belül
+legalább 3 szellem el lett fogyasztva
+- a harmadik karakter (X/h/H):
+HALF_OF_DOTS_EATED_BEFORE_THIRD_OF_MAX_TICK, a harmad idõ alatt a pontok
+fele meg lett szerevze
+- a negyedik karakter (X/n/N): NOT_USED_SPEED_BEFORE_THIRD_OF_MAX_TICK, a
+harmad idõ elõtt nem lett gyorsító/erõsítõ elfogyasztva.
+Ahol az X jelenti, hogy még ez a pluszpont nem lett megszerezve, a kisbetû azt, hogy az
+elõzõ kör végén lett megszerezve, a nagybetû meg a pluszpont meglétét jelenti.
+Az elõzõ körben kiadott parancslista leírása ([^><v][Dx1+a-d]*):
+Lehetséges, hogy az elõzõ körben 0, 1 vagy 2 parancs (irány) is ki lett adva, ezek
+információi vannak felsorolva ' karakterrel elválasztva. Mindegyik lépés során lehetõség volt
+valaminek a fogyasztásra. Elõször az irány (^><v), majd utána tetszõleges sorrendben az
+hogy az elõzõ irány lett duplikálva (D - ami megegyezik azzal, hogy nem küldtetek választ),
+sikertelen volt-e a lépés mert a pacman a falnak ütközött (x), megettetek egy pontot (1),
+vagy egy gyorsítót (+), vagy egy szellemet (a-d) az adott lépésben.
+A következõ 'Ng' sor mindegyike egy-egy szellem leírását tartalmazza:
+n y x e f
+ahol 'n' egy kisbetûs karakter, a szellem egyedi azonosítója (a-d), 'y' 'x' a szellem pozíciója,
+'e' az idõegység, amíg ehetõ a szellem, 'f' az idõegység amíg egy helyben áll (tehát nem
+mozog).
+A kimenetnek a következõ formátumúnak kell lennie:
+G T P D[D2]
+Ahol ‘G’ a game id, ‘T’ a tick id, a ‘P’ a pacman id, a ‘D’ meg egy irány a következõ
+karakterek közül: ‘>’, ‘^’, ‘<’, ‘v’. Ha az adott irányított pacman gyors (a ‘f’ száma nem nulla),
+akkor lehetõség van egy második irányt megadni (D2), amelyet második parancsként
+értelmez a pacman, és egy körön belül 2 mezõt lép.
+
